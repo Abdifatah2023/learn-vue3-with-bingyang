@@ -23,7 +23,7 @@
   <p :class="{ inactive: isInactive, center: isCenter }">
     <!-- if you think embedding a JS object in HTML is verbose, you can choose to move the object to the script, 
         give it a name, and only put the JS object name in :class -->
-    Harry Potter
+    Harry Potterr
   </p>
 
   <!-- define a JS array in :class -->
