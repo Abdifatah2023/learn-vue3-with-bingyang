@@ -1,102 +1,92 @@
 <template>
-  <!--The most basic form of data binding is text interpolation using the "Mustache" syntax (double curly braces)-->
-  <h1>message: {{ message }}</h1>
-
+  <h1>{{ message }}</h1>
+  <div>
+    <form @submit.prevent="register">
+      <div>
+        <label for="email">Email:</label>
+        <input
+          id="email"
+          v-model="email"
+          type="email"
+          placeholder="Enter your email"
+        />
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input
+          id="password"
+          v-model="password"
+          type="password"
+          placeholder="Create a password"
+        />
+      </div>
+      <button type="submit" :disabled="!isFormValid">Register</button>
+    </form>
+  </div>
   <hr />
-
-  <!--{{message}} refers to the message we defined in data-->
-  <h1>number: {{ number }}</h1>
-
-  <h1>doubleNum(50): {{ doubleNum(50) }}</h1>
-
-  <h1>number * 2 = {{ number * 2 }}</h1>
-
-  <h1>
-    {{ number > 150 ? 'number is great than 150' : 'number is less than 150' }}
-  </h1>
-
-  <h1 v-text="number"></h1>
-
-  <hr />
-
-  <h1>harry: {{ harry }}</h1>
-
-  <h1>harry.name: {{ harry.name }}</h1>
-
-  <h1>hogwartsWizards: {{ hogwartsWizards }}</h1>
-
-  <h1>hogwartsWizards[0]: {{ hogwartsWizards[0] }}</h1>
-  <hr />
-
-  <h1>rawHtml: {{ rawHtml }}</h1>
-
-  <h1 v-text="rawHtml"></h1>
-
-  <h1 v-html="rawHtml"></h1>
+  <div class="card">
+    <h2>Name: {{ wizard1.name }}</h2>
+    <h2>Wand: {{ wizard1.wand }}</h2>
+    <h2>Age: {{ wizard1.age }}</h2>
+    <button @click="wizard1.name = wizard1.name.toUpperCase()">
+      Change name to upper case
+    </button>
+    <button @click="wizard1.wand.core = 'Unicorn hair'">
+      Change wand core
+    </button>
+    <button @click="wizard1.age = 20">Change age</button>
+  </div>
 </template>
 
 <script setup>
-let message = 'Hello, Vue!'
-let number = 50
+import { ref, watch, watchEffect } from 'vue'
+let message = ref('Hello, watchEffect!')
+const email = ref('')
+const password = ref('')
+const isFormValid = ref(false)
 
-function doubleNum(num) {
-  return num * 2
+// watch([email, password], () => {
+//   const hasEmail = email.value.length > 0
+//   const hasPassword = password.value.length > 0
+//   isFormValid.value = hasEmail && hasPassword
+// })
+
+watchEffect(() => {
+  console.log('watchEffect')
+  const hasEmail = email.value.length > 0
+  const hasPassword = password.value.length > 0
+  isFormValid.value = hasEmail && hasPassword
+})
+
+const register = () => {
+  alert('Registration successful!')
+  // Registration logic goes here
 }
 
-let harry = {
+let wizard1 = ref({
   id: 1001,
   name: 'Harry Potter',
   house: 'Gryffindor',
-  age: 17, // Age during the final battle of Hogwarts
+  age: 17,
   wand: {
     core: 'Phoenix feather',
     wood: 'Holly'
   }
-}
-const hogwartsWizards = [
-  {
-    id: 1001,
-    name: 'Harry Potter',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Phoenix feather',
-      wood: 'Holly'
-    }
-  },
-  {
-    id: 1002,
-    name: 'Hermione Granger',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Vine'
-    }
-  },
-  {
-    id: 1003,
-    name: 'Ron Weasley',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Unicorn hair',
-      wood: 'Willow'
-    }
-  },
-  {
-    id: 1004,
-    name: 'Draco Malfoy',
-    house: 'Slytherin',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Hawthorn'
-    }
-  }
-]
+})
 
-let rawHtml = '<span style="color: red">This should be red.</span>'
+watchEffect(() => {
+  console.log(wizard1.value.name, wizard1.value.wand.core)
+})
+
+watchEffect(() => {
+  console.log(wizard1.value)
+})
 </script>
-
-<style lang="scss" scoped></style>
+<style scoped>
+.card {
+  background-color: purple;
+  color: white;
+  padding: 20px 10px;
+  margin-bottom: 10px;
+}
+</style>
