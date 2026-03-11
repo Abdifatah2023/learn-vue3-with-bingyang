@@ -1,102 +1,83 @@
 <template>
-  <!--The most basic form of data binding is text interpolation using the "Mustache" syntax (double curly braces)-->
-  <h1>message: {{ message }}</h1>
+  <!-- Passing data to child component through custom attributes. -->
+  <BlogPost
+    id="1"
+    blogPostTitle="What is a muggle?"
+    blogPostContent="A muggle is a person who lacks any sort of magical ability..."
+  >
+  </BlogPost>
+
+  <!-- Technically, you can use camelCase when passing props to a child component. However, the convention is using kebab-case to align with HTML attributes. -->
+  <BlogPost
+    id="1"
+    blog-post-title="What is a muggle?"
+    blog-post-content="A muggle is a person who lacks any sort of magical ability..."
+  >
+  </BlogPost>
+
+  <!-- We can use v-bind to pass data in parent component to child component. -->
+  <BlogPost
+    :id="blogPostId"
+    :blog-post-title="blogPostTitle"
+    :blog-post-content="blogPostContent"
+  ></BlogPost>
 
   <hr />
 
-  <!--{{message}} refers to the message we defined in data-->
-  <h1>number: {{ number }}</h1>
-
-  <h1>doubleNum(50): {{ doubleNum(50) }}</h1>
-
-  <h1>number * 2 = {{ number * 2 }}</h1>
-
-  <h1>
-    {{ number > 150 ? 'number is great than 150' : 'number is less than 150' }}
-  </h1>
-
-  <h1 v-text="number"></h1>
+  <BlogPost
+    v-for="post in posts"
+    :key="post.id"
+    :id="post.id"
+    :blog-post-title="post.blogPostTitle"
+    :blog-post-content="post.blogPostContent"
+  ></BlogPost>
+  <!-- Think about this, what if a blog post have 10 properties to display, e.g. publish date, author, number of likes etc. This will make the above BlogPost element very lengthy. -->
 
   <hr />
 
-  <h1>harry: {{ harry }}</h1>
-
-  <h1>harry.name: {{ harry.name }}</h1>
-
-  <h1>hogwartsWizards: {{ hogwartsWizards }}</h1>
-
-  <h1>hogwartsWizards[0]: {{ hogwartsWizards[0] }}</h1>
-  <hr />
-
-  <h1>rawHtml: {{ rawHtml }}</h1>
-
-  <h1 v-text="rawHtml"></h1>
-
-  <h1 v-html="rawHtml"></h1>
+  <!-- Binding multiple properties using an object. -->
+  <BlogPost v-for="post in posts" :key="post.id" v-bind="post"></BlogPost>
 </template>
 
 <script setup>
-let message = 'Hello, Vue!'
-let number = 50
+import BlogPost from '@/blogPost.vue'
+import { ref } from 'vue'
 
-function doubleNum(num) {
-  return num * 2
-}
+let blogPostId = ref(2)
+let blogPostTitle = ref(
+  'HP and the Cursed Child Broadway production suspended until April'
+)
+let blogPostContent = ref(
+  'Adding to the earlier post, the Broadway production of Harry Potter and the Cursed Child has been...'
+)
 
-let harry = {
-  id: 1001,
-  name: 'Harry Potter',
-  house: 'Gryffindor',
-  age: 17, // Age during the final battle of Hogwarts
-  wand: {
-    core: 'Phoenix feather',
-    wood: 'Holly'
+let posts = ref([
+  {
+    id: 1,
+    blogPostTitle: 'What is a muggle in HP world?',
+    blogPostContent:
+      'A muggle is a person who lacks any sort of magical ability...'
+  },
+  {
+    id: 2,
+    blogPostTitle:
+      'HP and the Cursed Child Broadway production suspended until April',
+    blogPostContent:
+      'Adding to the earlier post, the Broadway production of Harry Potter and the Cursed Child has been...'
+  },
+  {
+    id: 3,
+    blogPostTitle: 'Potter DIY: Make Your Own “Harry Potter Puppet Pal”',
+    blogPostContent:
+      'We all remember those iconic YouTube videos of Harry and the gang and probably couldn’t get “The Mysterious...'
+  },
+  {
+    id: 4,
+    blogPostTitle: 'Fan Project Brings Life to “Harry Potter” in Translation',
+    blogPostContent:
+      'It’s no secret that the Harry Potter series is a global phenomenon, having been translated into over 80 languages to date....'
   }
-}
-const hogwartsWizards = [
-  {
-    id: 1001,
-    name: 'Harry Potter',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Phoenix feather',
-      wood: 'Holly'
-    }
-  },
-  {
-    id: 1002,
-    name: 'Hermione Granger',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Vine'
-    }
-  },
-  {
-    id: 1003,
-    name: 'Ron Weasley',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Unicorn hair',
-      wood: 'Willow'
-    }
-  },
-  {
-    id: 1004,
-    name: 'Draco Malfoy',
-    house: 'Slytherin',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Hawthorn'
-    }
-  }
-]
-
-let rawHtml = '<span style="color: red">This should be red.</span>'
+])
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>
