@@ -2,14 +2,16 @@
   <BlogPost
     v-for="post in posts"
     :key="post.id"
-    v-bind="post"
+    :id="post.id"
+    v-model:blogPostTitle="post.blogPostTitle"
+    v-model:blogPostContent="post.blogPostContent"
     @delete-blog-post="processDeletion"
   ></BlogPost>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import BlogPost from '@/BlogPost.vue'
+import BlogPost from './BlogPost.vue'
 let posts = ref([
   {
     id: 1,
