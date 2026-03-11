@@ -1,102 +1,62 @@
 <template>
-  <!--The most basic form of data binding is text interpolation using the "Mustache" syntax (double curly braces)-->
-  <h1>message: {{ message }}</h1>
+  <StudentList :list="list">
+    <template #default="{ stu }">
+      <span :class="{ cursed: stu.name == 'Harry' }">
+        {{ stu.name }}
+      </span>
+    </template>
+  </StudentList>
 
   <hr />
 
-  <!--{{message}} refers to the message we defined in data-->
-  <h1>number: {{ number }}</h1>
-
-  <h1>doubleNum(50): {{ doubleNum(50) }}</h1>
-
-  <h1>number * 2 = {{ number * 2 }}</h1>
-
-  <h1>
-    {{ number > 150 ? 'number is great than 150' : 'number is less than 150' }}
-  </h1>
-
-  <h1 v-text="number"></h1>
-
-  <hr />
-
-  <h1>harry: {{ harry }}</h1>
-
-  <h1>harry.name: {{ harry.name }}</h1>
-
-  <h1>hogwartsWizards: {{ hogwartsWizards }}</h1>
-
-  <h1>hogwartsWizards[0]: {{ hogwartsWizards[0] }}</h1>
-  <hr />
-
-  <h1>rawHtml: {{ rawHtml }}</h1>
-
-  <h1 v-text="rawHtml"></h1>
-
-  <h1 v-html="rawHtml"></h1>
+  <el-table :data="todoList" stripe border style="width: 100%">
+    <el-table-column prop="userId" label="User ID" width="180" />
+    <el-table-column prop="id" label="ID" width="180" />
+    <el-table-column prop="title" label="Title" />
+    <el-table-column prop="completed" label="Status">
+      <template #default="slotProps">
+        <el-tag type="success" v-if="slotProps.row.completed">Completed</el-tag>
+        <el-tag type="danger" v-else>Incomplete</el-tag>
+      </template>
+    </el-table-column>
+  </el-table>
 </template>
 
 <script setup>
-let message = 'Hello, Vue!'
-let number = 50
+import { onMounted, ref } from 'vue'
+import StudentList from './StudentList.vue'
 
-function doubleNum(num) {
-  return num * 2
+const list = ref([
+  {
+    id: 1,
+    name: 'Harry'
+  },
+  {
+    id: 2,
+    name: 'Hermione'
+  },
+  {
+    id: 3,
+    name: 'Ron'
+  }
+])
+
+const todoList = ref([])
+
+async function getTodoList() {
+  const response = await fetch('https://jsonplaceholder.typicode.com/todos')
+  const data = await response.json()
+  console.log(data)
+  todoList.value = data
 }
 
-let harry = {
-  id: 1001,
-  name: 'Harry Potter',
-  house: 'Gryffindor',
-  age: 17, // Age during the final battle of Hogwarts
-  wand: {
-    core: 'Phoenix feather',
-    wood: 'Holly'
-  }
-}
-const hogwartsWizards = [
-  {
-    id: 1001,
-    name: 'Harry Potter',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Phoenix feather',
-      wood: 'Holly'
-    }
-  },
-  {
-    id: 1002,
-    name: 'Hermione Granger',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Vine'
-    }
-  },
-  {
-    id: 1003,
-    name: 'Ron Weasley',
-    house: 'Gryffindor',
-    age: 17,
-    wand: {
-      core: 'Unicorn hair',
-      wood: 'Willow'
-    }
-  },
-  {
-    id: 1004,
-    name: 'Draco Malfoy',
-    house: 'Slytherin',
-    age: 17,
-    wand: {
-      core: 'Dragon heartstring',
-      wood: 'Hawthorn'
-    }
-  }
-]
-
-let rawHtml = '<span style="color: red">This should be red.</span>'
+onMounted(() => {
+  getTodoList()
+})
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.cursed {
+  color: red;
+}
+</style>
